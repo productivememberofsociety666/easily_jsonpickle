@@ -13,7 +13,6 @@ classifiers=[
 "Development Status :: 3 - Alpha",
 "Programming Language :: Python :: 3.4",
 ],
-
 packages=["easily_jsonpickle"],
 install_requires=["jsonpickle"],
 tests_require=["nose"]
