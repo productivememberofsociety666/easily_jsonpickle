@@ -17,10 +17,8 @@ import jsonpickle.handlers
 pickler = jsonpickle.pickler.Pickler()
 unpickler = jsonpickle.unpickler.Unpickler()
 
-def easily_to_json(
-flatten_method_name, restore_method_name,
-flatten_normally=[]
-):
+def easily_to_json(flatten_method_name, restore_method_name,
+flatten_normally=None):
   """
   Returns a decorator which sets jsonpickle flatten and restore methods.
 
@@ -50,6 +48,8 @@ flatten_normally=[]
   Note that there can be no ``restore_normally`` because how would that work?
   Just think about it m8.
   """
+  if flatten_normally is None:
+    flatten_normally = []
   def easily_decorated(cls):
     """
     The actual decorator returned by ``easily_to_json``.
