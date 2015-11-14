@@ -13,8 +13,10 @@ import jsonpickle
 import pdb
 
 # Prepare "class infrastructure"
+
+# Class that stores "name" and "children" attributes "normally"
 @easily_to_json("to_json", "from_json", ["name", "children"])
-class A:
+class ANormally:
   def to_json(self, d):
     pass
   @classmethod
@@ -24,17 +26,35 @@ class A:
     a.children = jsonpickle.decode(json.dumps(d["children"]))
     return a
 
+# Class that stores "custom" attribute via own method
+@easily_to_json("to_json", "from_json", [])
+class ACustom:
+  def to_json(self, d):
+    d["custom"] = self.custom
+  @classmethod
+  def from_json(cls, d):
+    a = cls()
+    a.custom = d["custom"]
+    return a
+
 class B:
   pass
 
 # Actual tests
-def test_encode_decode():
-  a = A();
+def test_encode_decode_normally():
+  a = ANormally();
   a.name = "dontcare";
-  a.children = ["hello", "bye"];
+  a.children = ["hello", "bye"]
   json_str = jsonpickle.encode(a)
   a_decoded = jsonpickle.decode(json_str)
   assert_equal(a_decoded.children, ["hello", "bye"])
+
+def test_encode_decode_custom():
+  a = ACustom();
+  a.custom = "test"
+  json_str = jsonpickle.encode(a)
+  a_decoded = jsonpickle.decode(json_str)
+  assert_equal(a_decoded.custom, "test")
 
 def test_creates_references():
   # Remove SkipTest once reference handling is made easier and thus implemented
